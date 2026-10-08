@@ -2006,7 +2006,7 @@ function traitsHTML(){const T=G.ex.traits;return `<div class="stamps">${Object.e
 const LOST={
   l_a:["ㆍ","아래아","‘ㅏ’와 ‘ㅗ’의 중간쯤 되는 소리. 하늘을 본뜬 홀소리의 으뜸 글자였지만 소리가 사라지면서 1933년 한글 맞춤법 통일안에서 쓰지 않게 되었어요."],
   l_z:["ㅿ","반치음","‘ㅅ’과 비슷하되 울림이 있는 소리(영어의 z와 비슷). 16세기 무렵 소리가 사라졌어요."],
-  l_ng:["ㆁ","옛이응","‘ㅇ’과 닮았지만 다른 글자예요. ‘ㅇ’은 목구멍소리이고, 꼭지가 달린 ‘ㆁ’은 ‘ㄱ·ㅋ’과 같은 자리에서 나는 어금닛소리로 ‘강’의 받침 소리(ng)를 적었어요. 뒷날 ‘ㆁ’ 글자가 쓰이지 않게 되면서, 그 소리를 받침 ‘ㅇ’으로 대신 적게 되었어요."],
+  l_ng:["ㆁ","옛이응","‘ㅇ’과 닮았지만 다른 글자예요. ‘ㅇ’은 목구멍의 모양을 본뜬 글자로 첫소리 자리에서는 소릿값이 없고, 꼭지가 달린 ‘ㆁ’은 ‘ㄱ·ㅋ’과 같은 자리에서 나는 어금닛소리로 ‘강’의 받침 소리(ng)를 적었어요. 뒷날 ‘ㆁ’ 글자가 쓰이지 않게 되면서, 그 소리를 받침 ‘ㅇ’으로 대신 적게 되었어요."],
   l_h:["ㆆ","여린히읗","목구멍을 살짝 막았다 터뜨리는 소리. 주로 한자의 소리를 적는 데 쓰이다가 가장 먼저 사라졌어요."]
 };
 const NFIND=Object.keys(LOST).length;
@@ -2029,11 +2029,17 @@ document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest("[da
 (()=>{const b=document.getElementById("bMap");if(b)b.onclick=openStoryMap})();
 
 /* ── 내 이름 속 훈민정음: 이름의 낱자가 어떤 원리로 만들어졌는지 풀어 줌 ── */
-const JA_ORG={"ㄱ":["기본자","어금닛소리. 혀뿌리가 목구멍을 막는 모양"],"ㅋ":["획 더하기","ㄱ에 획을 더함"],"ㄲ":["나란히 쓰기","ㄱ을 나란히 씀"],
-  "ㄴ":["기본자","혓소리. 혀가 윗잇몸에 붙는 모양"],"ㄷ":["획 더하기","ㄴ에 획을 더함"],"ㅌ":["획 더하기","ㄷ에 획을 더함"],"ㄸ":["나란히 쓰기","ㄷ을 나란히 씀"],"ㄹ":["모양 달리하기","혓소리 글자의 모양을 달리함(이체자)"],
-  "ㅁ":["기본자","입술소리. 입의 모양"],"ㅂ":["획 더하기","ㅁ에 획을 더함"],"ㅍ":["획 더하기","ㅂ에 획을 더함"],"ㅃ":["나란히 쓰기","ㅂ을 나란히 씀"],
-  "ㅅ":["기본자","잇소리. 이의 모양"],"ㅈ":["획 더하기","ㅅ에 획을 더함"],"ㅊ":["획 더하기","ㅈ에 획을 더함"],"ㅆ":["나란히 쓰기","ㅅ을 나란히 씀"],"ㅉ":["나란히 쓰기","ㅈ을 나란히 씀"],
-  "ㅇ":["기본자","목구멍소리. 목구멍의 모양. 첫소리 자리에서는 소릿값이 없음"],"ㅎ":["획 더하기","ㅇ에 획을 더한 ㆆ에 다시 획을 더함"]};
+/* 닿소리는 모두 기본 다섯 자(발음 기관을 본뜸)에서 나옴: [기본자, 본뜬 것, 소리 이름] */
+const FAM={"ㄱ":["ㄱ","혀뿌리가 목구멍을 막는 모양","어금닛소리"],"ㄴ":["ㄴ","혀가 윗잇몸에 붙는 모양","혓소리"],"ㅁ":["ㅁ","입의 모양","입술소리"],"ㅅ":["ㅅ","이의 모양","잇소리"],"ㅇ":["ㅇ","목구멍의 모양","목구멍소리"]};
+const FAM_OF={"ㄱ":"ㄱ","ㅋ":"ㄱ","ㄲ":"ㄱ","ㄴ":"ㄴ","ㄷ":"ㄴ","ㅌ":"ㄴ","ㄸ":"ㄴ","ㄹ":"ㄴ","ㅁ":"ㅁ","ㅂ":"ㅁ","ㅍ":"ㅁ","ㅃ":"ㅁ","ㅅ":"ㅅ","ㅈ":"ㅅ","ㅊ":"ㅅ","ㅆ":"ㅅ","ㅉ":"ㅅ","ㅇ":"ㅇ","ㅎ":"ㅇ"};
+/* 기본자를 어떻게 했나: 0 그대로, 1 획을 더함, 2 나란히 씀, 3 모양을 달리함 */
+const HOW_OF={"ㄱ":0,"ㄴ":0,"ㅁ":0,"ㅅ":0,"ㅇ":0,"ㅋ":1,"ㄷ":1,"ㅌ":1,"ㅂ":1,"ㅍ":1,"ㅈ":1,"ㅊ":1,"ㅎ":1,"ㄲ":2,"ㄸ":2,"ㅃ":2,"ㅆ":2,"ㅉ":2,"ㄹ":3};
+const HOW_N=["기본자","획 더하기","나란히 쓰기","모양 달리하기"];
+const HOW_VIA={"ㅋ":"ㄱ에 획을 더함","ㄷ":"ㄴ에 획을 더함","ㅌ":"ㄴ에 획을 더한 ㄷ에 다시 획을 더함","ㅂ":"ㅁ에 획을 더함","ㅍ":"ㅁ에 획을 더한 ㅂ에 다시 획을 더함","ㅈ":"ㅅ에 획을 더함","ㅊ":"ㅅ에 획을 더한 ㅈ에 다시 획을 더함","ㅎ":"ㅇ에 획을 더한 ㆆ에 다시 획을 더함",
+  "ㄲ":"ㄱ을 나란히 씀","ㄸ":"ㄴ에 획을 더한 ㄷ을 나란히 씀","ㅃ":"ㅁ에 획을 더한 ㅂ을 나란히 씀","ㅆ":"ㅅ을 나란히 씀","ㅉ":"ㅅ에 획을 더한 ㅈ을 나란히 씀","ㄹ":"혓소리 ㄴ과 같은 갈래이나 모양을 달리함(이체자)"};
+const JA_ORG={};for(const j of Object.keys(FAM_OF)){const f=FAM[FAM_OF[j]],h=HOW_OF[j];
+  JA_ORG[j]=[h?"본뜨기 + "+HOW_N[h]:"본뜨기(기본자)",f[2]+". "+f[1]+"을 본뜬 ‘"+f[0]+"’"+(h?" → "+HOW_VIA[j]:"")]}
+const ZERO_ORG=["자리 채움","소릿값이 없음. 홀소리로 시작하는 글자의 꼴을 갖추려고 첫소리 자리에 쓴 것. 글자 ‘ㅇ’ 자체는 목구멍의 모양을 본뜬 기본자"];
 const MO_ORG={"ㅡ":["기본자","땅의 평평한 모양"],"ㅣ":["기본자","사람이 서 있는 모양"],
   "ㅗ":["합치기","하늘(ㆍ)을 땅(ㅡ) 위에"],"ㅏ":["합치기","하늘(ㆍ)을 사람(ㅣ) 오른쪽에"],"ㅜ":["합치기","하늘(ㆍ)을 땅(ㅡ) 아래에"],"ㅓ":["합치기","하늘(ㆍ)을 사람(ㅣ) 왼쪽에"],
   "ㅛ":["합치기","ㅗ에 하늘(ㆍ)을 하나 더"],"ㅑ":["합치기","ㅏ에 하늘(ㆍ)을 하나 더"],"ㅠ":["합치기","ㅜ에 하늘(ㆍ)을 하나 더"],"ㅕ":["합치기","ㅓ에 하늘(ㆍ)을 하나 더"],
@@ -2042,35 +2048,42 @@ const MO_ORG={"ㅡ":["기본자","땅의 평평한 모양"],"ㅣ":["기본자","
 const JONG_SPLIT={"ㄳ":"ㄱㅅ","ㄵ":"ㄴㅈ","ㄶ":"ㄴㅎ","ㄺ":"ㄹㄱ","ㄻ":"ㄹㅁ","ㄼ":"ㄹㅂ","ㄽ":"ㄹㅅ","ㄾ":"ㄹㅌ","ㄿ":"ㄹㅍ","ㅀ":"ㄹㅎ","ㅄ":"ㅂㅅ"};
 function nameHTML(name){const syl=hangulOf(name);if(!syl.length)return "";
   const cnt={};const row=(j,pos,o)=>{cnt[o[0]]=(cnt[o[0]]||0)+1;return "<tr><td class=\"nj\">"+j+"</td><td>"+pos+"</td><td><b>"+o[0]+"</b> · "+o[1]+"</td></tr>"};
-  const body=syl.map(ch=>{const a=jamoOf(ch);let h="<tr><th colspan=\"3\">"+ch+"</th></tr>"+row(a[0],"첫소리",JA_ORG[a[0]])+row(a[1],"가운뎃소리",MO_ORG[a[1]]);
-    if(a[2])for(const j of [...(JONG_SPLIT[a[2]]||a[2])])h+=row(j==="ㅇ"?"ㆁ→ㅇ":j,"끝소리",j==="ㅇ"?["모양 달리하기","받침의 ㅇ 소리는 본디 꼭지 달린 ㆁ(옛이응)으로 적던 어금닛소리. 지금은 ㅇ으로 적음"]:JA_ORG[j]);return h}).join("");
+  const body=syl.map(ch=>{const a=jamoOf(ch);let h="<tr><th colspan=\"3\">"+ch+"</th></tr>"+(a[0]==="ㅇ"?row("ㅇ","첫소리 자리",ZERO_ORG):row(a[0],"첫소리",JA_ORG[a[0]]))+row(a[1],"가운뎃소리",MO_ORG[a[1]]);
+    if(a[2])for(const j of [...(JONG_SPLIT[a[2]]||a[2])])h+=row(j==="ㅇ"?"ㆁ→ㅇ":j,"끝소리",j==="ㅇ"?["본뜨기 + 모양 달리하기","받침의 ㅇ 소리는 본디 꼭지 달린 ㆁ(옛이응)으로 적던 어금닛소리. 지금은 ㅇ으로 적음"]:JA_ORG[j]);return h}).join("");
   const sum=Object.entries(cnt).map(([k,n])=>k+" "+n+"자").join(", ");
   return "<details class=\"nm\" open><summary>내 이름 속 훈민정음</summary><table class=\"nmt\">"+body+"</table><p class=\"note\">"+esc(syl.join(""))+": "+sum+". 받침 글자는 따로 만들지 않고 첫소리 글자를 다시 써요.</p></details>"}
 
 /* 이름을 낱자로 풀어, 같은 자리의 같은 낱자는 한 번만 물음 */
 const hangulOf=name=>[...String(name||"").trim()].filter(c=>c>="가"&&c<="힣");
 function nameItems(name){const out=[],seen=new Set();
-  for(const ch of hangulOf(name)){const a=jamoOf(ch);const push=(j,pos,o,ng)=>{const k=j+pos;if(seen.has(k))return;seen.add(k);out.push({ch,j,pos,o,ng})};
-    push(a[0],"첫소리",JA_ORG[a[0]]);push(a[1],"가운뎃소리",MO_ORG[a[1]]);
+  for(const ch of hangulOf(name)){const a=jamoOf(ch);const push=(j,pos,o,ng,zero)=>{const k=j+pos;if(seen.has(k))return;seen.add(k);out.push({ch,j,pos,o,ng,zero})};
+    if(a[0]==="ㅇ")push("ㅇ","첫소리 자리",ZERO_ORG,false,true);else push(a[0],"첫소리",JA_ORG[a[0]]);push(a[1],"가운뎃소리",MO_ORG[a[1]]);
     if(a[2])for(const j of [...(JONG_SPLIT[a[2]]||a[2])])push(j,"끝소리",JA_ORG[j],j==="ㅇ")}
   return out}
-/* 놀이 8. 내 이름 풀기: 낱자마다 어떤 원리로 만들어졌는지 고름 */
-function nameGame(name){return new Promise(res=>{const items=nameItems(name);let cur=0,ok=0,msg="",cls="",no=[],state="ask";
+/* 놀이 8. 내 이름 풀기: 닿소리는 ① 어느 발음 기관을 본뜬 기본자에서 나왔는지 ② 그 기본자를 어떻게 했는지, 두 단계로 물음 */
+function nameGame(name){return new Promise(res=>{const items=nameItems(name);let cur=0,ok=0,msg="",cls="",no=[],state="ask",step=0,clean=true;
   const v=document.createElement("div");v.className="veil";v.style.zIndex=60;v.innerHTML='<div class="sheet mg"></div>';$("#ui").appendChild(v);const box=v.querySelector(".sheet");
-  const optsOf=it=>it.ng?["목구멍소리 ‘ㅇ’ 그대로","꼭지 달린 ‘ㆁ’(옛이응)"]:it.pos==="가운뎃소리"?["기본자 (하늘·땅·사람을 본뜸)","합치기 (기본자를 합함)"]:["기본자 (발음 기관을 본뜸)","획 더하기","나란히 쓰기","모양 달리하기"];
-  const ansOf=it=>it.ng?1:optsOf(it).findIndex(o=>o.startsWith(it.o[0]));
+  const ORG=["ㄱ","ㄴ","ㅁ","ㅅ","ㅇ"];
+  const kind=it=>it.ng?"ng":it.zero?"zero":it.pos==="가운뎃소리"?"mo":"ja";
+  const optsOf=it=>{const k=kind(it);if(k==="ng")return["꼭지 없는 ‘ㅇ’ 그대로","꼭지 달린 ‘ㆁ’(옛이응)"];if(k==="zero")return["소리 없이 첫소리 자리만 채운다","목구멍에서 나는 닿소리를 낸다","‘ng’ 소리를 낸다"];if(k==="mo")return["기본자 그대로 (하늘·땅·사람을 본뜸)","기본자를 합침"];
+    if(step===0)return ORG.map(b=>FAM[b][1]+" → ‘"+b+"’");const b=FAM_OF[it.j];return["기본자 ‘"+b+"’ 그대로","‘"+b+"’에 획을 더함","글자를 나란히 씀","모양을 달리함"]};
+  const ansOf=it=>{const k=kind(it);if(k==="ng")return 1;if(k==="zero")return 0;if(k==="mo")return it.o[0]==="기본자"?0:1;return step===0?ORG.indexOf(FAM_OF[it.j]):HOW_OF[it.j]};
+  const askOf=it=>{const k=kind(it);if(k==="ng")return"받침 ‘ㅇ’의 소리(ng)를 훈민정음에서는 본디 어느 글자로 적었을까요?";if(k==="zero")return"‘"+it.ch+"’을(를) 소리 내 보세요. 첫소리 자리의 ‘ㅇ’은 어떤 구실을 할까요?";if(k==="mo")return"‘"+it.j+"’은(는) 어떻게 만든 글자일까요?";
+    return step===0?"① ‘"+it.j+"’은(는) 무엇을 본뜬 기본자에서 나온 글자일까요? ‘"+it.j+"’을(를) 소리 내 보세요.":"② 기본자 ‘"+FAM_OF[it.j]+"’("+FAM[FAM_OF[it.j]][1]+")을 어떻게 해서 ‘"+it.j+"’을(를) 만들었을까요?"};
   const paint=()=>{const it=items[cur];
     box.innerHTML='<span class="eb">내 이름 속 훈민정음 · '+(cur+1)+' / '+items.length+'</span><h2>‘'+esc(hangulOf(name).join(""))+'’을 낱자로 풀기</h2>'
-    +'<div class="stage"><div><div class="big">'+esc(it.ch)+' <i>→</i> '+it.j+'</div><div class="sub">‘'+esc(it.ch)+'’의 <b>'+it.pos+'</b> ‘'+it.j+'’</div></div></div>'
-    +'<div class="argq"><b>어떻게 만든 글자일까</b>'+(it.ng?"받침 ‘ㅇ’의 소리(ng)를 훈민정음에서는 본디 어느 글자로 적었을까요?":"‘"+it.j+"’은(는) 어떤 원리로 만들어졌을까요?")+'</div>'
+    +'<div class="stage"><div><div class="big">'+esc(it.ch)+' <i>→</i> '+it.j+'</div><div class="sub">‘'+esc(it.ch)+'’의 <b>'+it.pos+'</b>에 쓰인 ‘'+it.j+'’</div></div></div>'
+    +'<div class="argq"><b>어떻게 만든 글자일까</b>'+askOf(it)+'</div>'
     +(state==="won"?'<div class="resp good">'+esc(msg)+'</div><div class="row" style="justify-content:center"><button class="btn pri" data-next>'+(cur===items.length-1?"다 풀었어요 ▶":"다음 낱자 ▶")+'</button></div>'
       :'<div class="resp '+cls+'">'+(msg?esc(msg):"&nbsp;")+'</div><div class="arga">'+optsOf(it).map((o,i)=>'<button class="btn'+(no.includes(i)?" no":"")+'" data-a="'+i+'">'+esc(o)+'</button>').join("")+'</div>')};
   paint();
   box.addEventListener("click",e=>{const it=items[cur];const b=e.target.closest("[data-a]");
-    if(b&&state==="ask"){const i=+b.dataset.a;
-      if(i===ansOf(it)){sfx("correct");if(!no.length)ok++;state="won";msg=it.ng?"받침의 ㅇ 소리는 본디 꼭지 달린 ㆁ(옛이응)으로 적던 어금닛소리예요. ㆁ은 어금닛소리 글자의 모양을 달리한 글자이고, 지금은 ㅇ으로 적어요.":it.o[0]+" · "+it.o[1];paint()}
-      else{sfx("wrong");no.push(i);cls="bad";msg=it.ng?"첫소리의 ㅇ과 받침의 ㅇ은 본디 다른 글자였어요.":it.pos==="가운뎃소리"?"ㆍ, ㅡ, ㅣ 셋만 기본자예요.":"닿소리의 기본자는 ㄱ, ㄴ, ㅁ, ㅅ, ㅇ 다섯뿐이에요. 이 글자 안에 어떤 기본자가 들어 있는지 보세요.";paint();shk(box)}return}
-    if(e.target.closest("[data-next]")){cur++;state="ask";no=[];msg="";cls="";if(cur>=items.length){v.remove();res({ok,n:items.length})}else paint()}});
+    if(b&&state==="ask"){const i=+b.dataset.a,k=kind(it);
+      if(i===ansOf(it)){sfx("correct");
+        if(k==="ja"&&step===0){step=1;no=[];cls="good";msg="맞아요. ‘"+it.j+"’은(는) "+FAM[FAM_OF[it.j]][2]+" 갈래예요. "+FAM[FAM_OF[it.j]][1]+"을 본뜬 ‘"+FAM_OF[it.j]+"’에서 나왔어요.";paint();return}
+        if(clean)ok++;state="won";msg=k==="ng"?"받침의 ㅇ 소리는 본디 꼭지 달린 ㆁ(옛이응)으로 적던 어금닛소리예요. ㆁ은 어금닛소리이지만 소리가 ㅇ과 비슷해 모양을 ㅇ에서 달리해 만들었고, 지금은 ㅇ으로 적어요.":k==="zero"?"첫소리 자리의 ‘ㅇ’은 소릿값이 없어요. ‘"+it.ch+"’은(는) 홀소리만 소리 나고, ‘ㅇ’은 글자의 꼴을 갖추려고 자리를 채운 거예요. 글자 ‘ㅇ’ 자체는 목구멍의 모양을 본뜬 기본자예요.":it.o[0]+" · "+it.o[1];paint()}
+      else{sfx("wrong");clean=false;no.push(i);cls="bad";msg=k==="ng"?"첫소리의 ㅇ과 받침의 ㅇ은 본디 다른 글자였어요.":k==="zero"?"‘"+it.ch+"’에서 실제로 나는 소리는 홀소리뿐이에요.":k==="mo"?"ㆍ, ㅡ, ㅣ 셋만 기본자예요.":step===0?"‘"+it.j+"’을(를) 소리 낼 때 입 안의 어디가 닿거나 좁아지는지 느껴 보세요.":"‘"+it.j+"’ 안에 기본자 ‘"+FAM_OF[it.j]+"’의 모양이 어떻게 들어 있는지 보세요.";paint();shk(box)}return}
+    if(e.target.closest("[data-next]")){cur++;state="ask";step=0;clean=true;no=[];msg="";cls="";if(cur>=items.length){v.remove();res({ok,n:items.length})}else paint()}});
 })}
 
 /* ── 수료증과 제출 ── */
@@ -2296,12 +2309,12 @@ const SHAPEQ=[
   ["ㄴ","혓소리","혀끝이 윗잇몸에 가 붙었다가 떨어지면서 나는 소리예요.","혀가 윗잇몸에 붙는 모양을 옆에서 본 것"],
   ["ㅁ","입술소리","두 입술이 맞붙었다가 떨어지면서 나는 소리예요.","다문 입의 모양"],
   ["ㅅ","잇소리","입 안을 막지 않고, 좁은 틈으로 바람이 이를 스치며 새어 나오는 소리예요.","뾰족한 이의 모양"],
-  ["ㅇ","목구멍소리","혀도 입술도 쓰지 않고, 열린 목구멍에서 그대로 울려 나오는 소리예요.","둥근 목구멍의 모양"]];
+  ["ㅇ","훈민정음에서 목구멍소리로 삼은 글자","혀도 입술도 이도 쓰지 않아요. 소리가 지나 나오는 목구멍, 그 둥근 모양을 본뜬 글자예요.","둥근 목구멍의 모양. 오늘날 ‘아, 으’처럼 첫소리 자리에 쓰인 ‘ㅇ’은 소릿값이 없고 자리만 채워요"]];
 function shapeGame(){return new Promise(res=>{let cur=0,msg="",cls="";const v=mgOpen(""),box=v.querySelector(".sheet");
   const paint=()=>{const done=cur>=SHAPEQ.length,q=SHAPEQ[Math.min(cur,SHAPEQ.length-1)];
     box.innerHTML=`<span class="eb">소리 나는 곳의 모양</span><h2>닿소리의 기본 다섯 자</h2>
     ${done?`<div class="stage"><div><div class="big">ㄱ ㄴ ㅁ ㅅ ㅇ</div><div class="sub">어금닛소리 · 혓소리 · 입술소리 · 잇소리 · 목구멍소리<br>다섯 글자 모두 그 소리를 낼 때의 <b>발음 기관 모양</b>을 본떴어요.</div></div></div><div class="row" style="justify-content:center"><button class="btn pri" data-go>계속 ▶</button></div>`
-    :`<p class="note">아래 다섯 글자를 ‘그·느·므·스·으’처럼 하나씩 소리 내 보고, 설명과 같은 입 모양이 되는 글자를 고르세요. <span class="pips">${"●".repeat(cur)}${"○".repeat(SHAPEQ.length-cur)}</span></p>
+    :`<p class="note">아래 글자를 ‘그·느·므·스’처럼 하나씩 소리 내 보고, 설명과 같은 입 모양이 되는 글자를 고르세요. <span class="pips">${"●".repeat(cur)}${"○".repeat(SHAPEQ.length-cur)}</span></p>
     <div class="stage"><div><div class="sub" style="font-size:16px;color:var(--text)">${q[2]}</div></div></div>
     <div class="resp ${cls}">${msg||"이 소리를 본뜬 글자는?"}</div><div class="jmrow">${["ㅁ","ㄱ","ㅇ","ㄴ","ㅅ"].map(c=>`<button class="jm" data-c="${c}">${c}</button>`).join("")}</div>`}`};
   paint();
@@ -2510,7 +2523,7 @@ async function c2Desk2(){
   await strokeGame();F.d2=1;trait("stroke");
   tip("기본 글자에 획을 더해 더 센 소리의 글자를 만드는 것을 ‘가획’의 원리라고 해요. 다섯 글자만 알면 나머지를 쉽게 짐작할 수 있어요.");
   await NR("눈여겨볼 글자가 있어요. ‘ㅇ’과 ‘ㆁ’(옛이응)이에요. 닮았지만 다른 글자예요.");
-  await ask("me","‘ㅇ’은 목구멍소리의 기본 글자다. 그렇다면 꼭지가 달린 ‘ㆁ’(옛이응)은 어떤 글자일까?",["‘ㅇ’을 멋 부려 쓴 같은 글자","‘ㄱ·ㅋ’과 같은 자리에서 나는 어금닛소리 글자로, ‘강’의 받침 소리를 적는다","홀소리(모음) 글자"],1,
+  await ask("me","‘ㅇ’은 목구멍의 모양을 본뜬 기본 글자다. 그렇다면 꼭지가 달린 ‘ㆁ’(옛이응)은 어떤 글자일까?",["‘ㅇ’을 멋 부려 쓴 같은 글자","‘ㄱ·ㅋ’과 같은 자리에서 나는 어금닛소리 글자로, ‘강’의 받침 소리를 적는다","홀소리(모음) 글자"],1,
     "맞아요. ‘ㆁ’은 어금닛소리예요. 그런데 소리가 ‘ㅇ’과 비슷하게 들려서 모양을 ‘ㅇ’과 닮게 만들었다고 해례본은 설명해요. 오늘날 받침의 ‘ㅇ’은 본디 이 ‘ㆁ’의 소리예요.","‘ㅇ’과 ‘ㆁ’은 훈민정음에서 서로 다른 글자예요. 소리 나는 자리가 달라요. ‘강’ 하고 받침 소리를 내 보세요. 혀뿌리가 어디에 닿나요?");
   setObj("왼쪽 아래 책상을 살펴보자");
 }
