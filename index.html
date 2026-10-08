@@ -572,8 +572,8 @@ function sprite(lookKey,dir,f,blink){
 }
 
 /* ═════════ 그림 아바타 (앞·옆·뒤 3방향 시트) ═════════ */
-const AVA_OF={me:"a_me",sejong:"a_sejong",choe:"a_choe",jeong:"a_jeong",scholar:"a_jsr",seonbi:"a_official",elder:"a_teacher",farmer:"a_man",woman:"a_woman",granny:"a_old",kid:"a_kid",guard:"a_guard",villager:"a_villager",woman2:"a_woman2",kid2:"a_dongja"};
-const AVA_H={a_kid:30,a_dongja:29,a_old:34,a_sejong:42};
+const AVA_OF={me:"a_me",sejong:"a_sejong",choe:"a_choe",jeong:"a_jeong",scholar:"a_jsr",seonbi:"a_official",farmer:"a_man",woman:"a_woman",granny:"a_old",kid:"a_kid",guard:"a_guard",villager:"a_villager",woman2:"a_woman2"};
+const AVA_H={a_kid:30,a_old:34,a_sejong:42};
 const AV={};
 function keyOut(a,W,H,bg){
   const near=i=>Math.abs(a[i]-bg[0])+Math.abs(a[i+1]-bg[1])+Math.abs(a[i+2]-bg[2]);
@@ -642,7 +642,7 @@ function drawAvatar(e,v,sx,sy,t){
 const SKIRT=new Set(["a_woman","a_old","a_woman2","a_sejong","a_me","a_choe","a_jeong","a_jsr","a_official","a_teacher"]);
 
 /* ═════════ 소품 그림 ═════════ */
-const PROP_W={o_cauldron:36,o_mill:46,o_cave:74,o_scarecrow:22,o_tent:58,o_stele:26,o_tomb:46,o_altar:26,o_choga:82,o_giwa:108,o_giwa_s:88,o_hall:150,o_gate:120,o_stall_food:58,o_stall_silk:58,o_stall_brass:58,o_well:30,o_jars:40,o_pyeong:38,o_hyeong:42,o_tree:44,o_pine:46,o_horses:74,o_desk:40,o_lantern:22};
+const PROP_W={o_choga:82,o_giwa:108,o_giwa_s:88,o_hall:150,o_gate:120,o_stall_food:58,o_stall_silk:58,o_well:30,o_jars:40,o_pyeong:38,o_tree:44,o_pine:46,o_desk:40,o_lantern:22,o_stele:26};
 const PROP={};
 function cutProp(img,w){
   const W=img.naturalWidth,H=img.naturalHeight;const c=document.createElement("canvas");c.width=W;c.height=H;const g=c.getContext("2d",{willReadFrequently:true});g.drawImage(img,0,0);
@@ -1142,14 +1142,7 @@ function orderPuzzle(title,ev){
     UI.onKey=e=>{if(got.length===ev.length&&["Enter","Space","KeyE"].includes(e.code)){v.querySelector("[data-go]").click()}return true};
   });
 }
-const EVID={
-  e1:{t:"호조 공문",d:"서울 이춘풍, 호조 돈 이천 냥을 빌려 가 사오 년이 되도록 일 푼 상납 없음."},
-  e2:{t:"비단 가게 외상 장부",d:"추월 아씨가 조른 비단 옷감·노리개·놋그릇… 값은 모두 서울 이 서방이 치름."},
-  e4:{t:"한량의 증언",d:"추월 집 뜰의 사환 거지가 서울 이춘풍. 매화타령을 부르다 술 한 잔 얻어 마심."},
-  e5:{t:"아이들의 목격담",d:"추월에게 ‘아가씨’ 하고 존대하며, 누룽지를 숟가락도 없이 얻어먹음."},
-  e7:{t:"이웃 노파의 증언",d:"돈이 떨어지자 추월이 ‘노류장화는 인개가절’이라며 춘풍을 내쫓음."},
-  e6:{t:"춘풍의 자백",d:"“내 집 주인 추월이와 일 년을 함께 놀고 나니 한 푼도 없어지고 이 지경이 되었으니”"}
-};
+const EVID={};
 function gain(id){if(G.evid.includes(id))return;G.evid.push(id);toast("증거 확보",EVID[id].t);updateHUD();checkEvid()}
 function portrait(look){const c=document.createElement("canvas");c.width=SW;c.height=SH;c.getContext("2d").drawImage(sprite(look,"d",0),0,0);return c}
 function debate(cfg){
@@ -1320,136 +1313,6 @@ function mgClose(v){v.remove();UI.modal=false;UI.onKey=null;setBodyTalking(false
 function shk(el){if(!el)return;el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake")}
 const PAD4=`<div class="pad4"><button data-a="u">↑</button><button data-a="l">←</button><button data-a="d">↓</button><button data-a="r">→</button></div>`;
 
-/* 땀 뜨기: 화살표 순서대로 누르기 */
-function stitchGame(len,title,col){
-  return new Promise(res=>{
-    const seq=Array.from({length:len},()=>"udlr"[Math.floor(Math.random()*4)]);let i=0,combo=0;
-    const X=k=>6+k*(88/len),SW=88/len;
-    const v=mgOpen(`<span class="eb">삯바느질 · 땀 뜨기</span><h2>${esc(title)}</h2><p class="note">화살표가 가리키는 방향키(또는 아래 버튼)를 순서대로 눌러 한 땀씩 꿰매요. 틀리면 실이 엉켜 한 땀 풀려요.</p>
-      <div class="cloth2" style="--cl:${col||"#efe3c8"}"><div class="weave"></div><div class="seam2"></div><div class="stitches"></div><div class="thr"></div><div class="needle"><i></i></div><div class="spark"></div></div>
-      <div class="sewbar"><span class="combo"></span><span class="cnt"></span></div><div class="seq"></div>${PAD4}`);
-    const cl=v.querySelector(".cloth2"),st=v.querySelector(".stitches"),nd=v.querySelector(".needle"),th=v.querySelector(".thr");
-    const place=()=>{const x=X(i);nd.style.left=x+"%";th.style.left=(i?X(i-1)+SW*0.6:X(0))+"%";th.style.width=Math.max(0,x-(i?X(i-1)+SW*0.6:X(0)))+"%"};
-    const paint=()=>{v.querySelector(".seq").innerHTML=seq.map((a,k)=>`<span class="arr${k<i?" ok":k===i?" cur":""}">${ARG[a]}</span>`).join("");
-      v.querySelector(".cnt").textContent=`${i} / ${len} 땀`;v.querySelector(".combo").textContent=combo>=3?`손놀림이 척척! ×${combo}`:"";place()};
-    const hit=a=>{
-      if(i>=len)return;
-      if(a===seq[i]){
-        const s=document.createElement("span");s.className="st";s.style.left=X(i)+"%";s.style.width=SW*0.6+"%";st.appendChild(s);
-        nd.classList.remove("dip");void nd.offsetWidth;nd.classList.add("dip");
-        const sp=v.querySelector(".spark");sp.style.left=X(i)+SW*0.3+"%";sp.classList.remove("on");void sp.offsetWidth;sp.classList.add("on");
-        i++;combo++;paint();sfx("stitch");
-        if(i>=len){sfx("correct");nd.classList.add("done");cl.classList.add("finish");setTimeout(()=>{mgClose(v);res()},800)}
-      }else{
-        sfx("wrong");combo=0;cl.classList.remove("tangle");void cl.offsetWidth;cl.classList.add("tangle");
-        if(i>0){const last=st.lastElementChild;if(last){last.classList.add("out");setTimeout(()=>last.remove(),250)}i--}
-        paint();
-      }};
-    paint();v.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(b)hit(b.dataset.a)});
-    UI.onKey=e=>{const a=ARR[e.code];if(a){hit(a);return true}return true};
-  });
-}
-/* 두레박 당기기: ←→ 번갈아 */
-function pullGame(title){
-  return new Promise(res=>{
-    let g=0,last="",alive=true;
-    const v=mgOpen(`<span class="eb">물 긷기 · 두레박 당기기</span><h2>${esc(title)}</h2><p class="note">← → 방향키(또는 아래 두 버튼)를 번갈아 빠르게 눌러 두레박을 끌어올려요. 손을 멈추면 두레박이 다시 내려가요.</p>
-      <div class="wellbox"><div class="rope"></div><div class="bucket">🪣</div></div><div class="gauge"><i></i></div><div class="pad2"><button data-a="l">← 왼손</button><button data-a="r">오른손 →</button></div>`);
-    const bucket=v.querySelector(".bucket"),bar=v.querySelector(".gauge i"),rope=v.querySelector(".rope");
-    const paint=()=>{bar.style.width=g+"%";bucket.style.bottom=(8+g*0.78)+"%";rope.style.height=(84-g*0.78)+"%"};
-    const hit=a=>{if(!alive)return;if(a!=="l"&&a!=="r")return;if(a!==last){g=Math.min(100,g+6);last=a;sfx("pull")}else{g=Math.max(0,g-2);shk(v.querySelector(".wellbox"))}paint();if(g>=100){alive=false;sfx("splash");setTimeout(()=>{mgClose(v);res()},400)}};
-    let lt=performance.now();const tick=now=>{if(!alive)return;const dt=(now-lt)/1000;lt=now;g=Math.max(0,g-dt*9);paint();requestAnimationFrame(tick)};requestAnimationFrame(tick);
-    v.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(b)hit(b.dataset.a)});
-    UI.onKey=e=>{const a=ARR[e.code];if(a){hit(a);return true}return true};
-  });
-}
-/* 죽 젓기: ↑→↓← 빙글빙글 */
-function stirGame(title){
-  return new Promise(res=>{
-    const ring=["u","r","d","l"];let k=0,g=0,alive=true;
-    const v=mgOpen(`<span class="eb">흰죽 쑤기 · 죽 젓기</span><h2>${esc(title)}</h2><p class="note">주걱을 ↑ → ↓ ← 순서로 빙글빙글 돌려 저어요. 순서를 틀리면 죽이 튀고, 멈추면 바닥이 눌어붙어요.</p>
-      <div class="pot"><div class="ladle"></div><div class="next"></div></div><div class="gauge"><i></i></div>${PAD4}`);
-    const bar=v.querySelector(".gauge i"),lad=v.querySelector(".ladle"),nx=v.querySelector(".next");
-    const paint=()=>{bar.style.width=g+"%";lad.style.transform=`rotate(${k*90}deg)`;nx.textContent="다음: "+ARG[ring[k]]};paint();
-    const hit=a=>{if(!alive)return;if(a===ring[k]){k=(k+1)%4;g=Math.min(100,g+5);sfx("bubble")}else{sfx("wrong");g=Math.max(0,g-6);shk(v.querySelector(".pot"))}paint();if(g>=100){alive=false;sfx("correct");setTimeout(()=>{mgClose(v);res()},400)}};
-    let lt=performance.now();const tick=now=>{if(!alive)return;const dt=(now-lt)/1000;lt=now;g=Math.max(0,g-dt*4);paint();requestAnimationFrame(tick)};requestAnimationFrame(tick);
-    v.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(b)hit(b.dataset.a)});
-    UI.onKey=e=>{const a=ARR[e.code];if(a){hit(a);return true}return true};
-  });
-}
-/* 음보 끊어 읽기: 낱말 사이를 눌러 네 도막으로 */
-function meterGame(words,cuts,title,why){
-  return new Promise(res=>{
-    const sel=new Set();let tries=0;
-    const v=mgOpen(`<span class="eb">음보 끊어 읽기</span><h2>${esc(title)}</h2><p class="note">판소리계 소설은 노래하듯 ‘네 도막(4음보)’으로 끊어 읽히는 문장이 많아요. 낱말 사이의 틈(｜)을 눌러 이 구절을 <b>네 도막</b>으로 나눠 보세요.</p>
-      <div class="words"></div><div class="mgmsg note"></div><div class="row"><button class="btn pri" data-ok>확인</button></div>`);
-    const paint=()=>{v.querySelector(".words").innerHTML=words.map((w,k)=>`<span class="wd">${esc(w)}</span>${k<words.length-1?`<button class="gap${sel.has(k)?" on":""}" data-g="${k}" aria-label="여기서 끊기">${sel.has(k)?"/":"｜"}</button>`:""}`).join("")};
-    paint();
-    v.addEventListener("click",e=>{const g=e.target.closest("[data-g]");if(g){const k=+g.dataset.g;sel.has(k)?sel.delete(k):sel.add(k);sfx("click");paint();return}
-      if(e.target.closest("[data-ok]")){const ok=sel.size===cuts.length&&cuts.every(c=>sel.has(c));
-        if(ok){sfx("correct");v.querySelector(".mgmsg").innerHTML=`<b style="color:var(--indigo)">맞았어요!</b> ${esc(why)}`;const b=v.querySelector("[data-ok]");b.textContent="계속 ▶";b.removeAttribute("data-ok");b.dataset.done="1"}
-        else{sfx("wrong");tries++;v.querySelector(".mgmsg").textContent=sel.size!==cuts.length?`네 도막이 되려면 ${cuts.length}군데를 끊어야 해요. 지금은 ${sel.size}군데예요.`:(tries>1?"소리 내어 읽으며 ‘둥-둥-둥-둥’ 네 박자로 나눠 보세요. 비슷한 길이의 도막이 돼요.":"조금 달라요. 소리 내어 읽으며 숨이 쉬어지는 곳을 찾아보세요.");shk(v.querySelector(".words"))}return}
-      if(e.target.closest("[data-done]")){mgClose(v);res()}});
-    UI.onKey=e=>{if(["Enter"].includes(e.code)){const b=v.querySelector("[data-done]");if(b)b.click();return true}return true};
-  });
-}
-/* 반상 차리기 */
-function tableGame(){
-  return new Promise(res=>{
-    const dishes=[["bap","밥","🍚"],["guk","국","🍲"],["fish","조기구이","🐟"],["namul","산나물","🥬"],["kimchi","김치","🌶"],["sujeo","수저","🥢"]];
-    const slots=[["b1","뒤 왼쪽","back"],["b2","뒤 가운데","back"],["b3","뒤 오른쪽","back"],["f1","앞 왼쪽","fl"],["f2","앞 오른쪽","fr"],["s","상 오른쪽 끝","side"]];
-    const place={};let pick=null;
-    const v=mgOpen(`<span class="eb">대부인께 올릴 밥상</span><h2>반상 차리기</h2><p class="note">그릇을 누른 뒤 놓을 자리를 누르세요.<br>차림 규칙: <b>밥은 앞 왼쪽, 국은 그 오른쪽(앞 오른쪽)</b>, 수저는 상 오른쪽 끝, 반찬은 뒤쪽에 놓아요.</p>
-      <div class="dishes"></div><div class="table"></div><div class="mgmsg note"></div><div class="row"><button class="btn pri" data-ok>상 올리기</button></div>`);
-    const paint=()=>{
-      v.querySelector(".dishes").innerHTML=dishes.filter(([id])=>!Object.values(place).includes(id)).map(([id,n,ic])=>`<button class="dish${pick===id?" sel":""}" data-d="${id}">${ic} ${n}</button>`).join("")||'<span class="note">모든 그릇을 놓았어요.</span>';
-      v.querySelector(".table").innerHTML=slots.map(([sid,lab])=>{const d=place[sid]&&dishes.find(x=>x[0]===place[sid]);return `<button class="slot s-${sid}" data-s="${sid}">${d?`${d[2]}<b>${d[1]}</b>`:`<i>${lab}</i>`}</button>`}).join("")};
-    paint();
-    v.addEventListener("click",e=>{
-      const d=e.target.closest("[data-d]");if(d){pick=d.dataset.d;paint();return}
-      const s=e.target.closest("[data-s]");if(s){const sid=s.dataset.s;if(pick){place[sid]=pick;pick=null;sfx("click")}else if(place[sid]){delete place[sid]}paint();return}
-      if(e.target.closest("[data-ok]")){
-        const where=id=>Object.keys(place).find(k=>place[k]===id);const kind=sid=>slots.find(x=>x[0]===sid)[2];
-        const errs=[];if(Object.keys(place).length<6)errs.push("아직 놓지 않은 그릇이 있어요.");
-        else{if(kind(where("bap"))!=="fl")errs.push("밥은 앞 왼쪽이에요.");if(kind(where("guk"))!=="fr")errs.push("국은 밥 오른쪽이에요.");if(kind(where("sujeo"))!=="side")errs.push("수저는 상 오른쪽 끝에 놓아요.");
-          for(const r of ["fish","namul","kimchi"])if(kind(where(r))!=="back"){errs.push("반찬은 뒤쪽에 놓아요.");break}}
-        if(errs.length){sfx("wrong");v.querySelector(".mgmsg").textContent=errs[0];shk(v.querySelector(".table"))}
-        else{sfx("correct");mgClose(v);res()}}});
-    UI.onKey=()=>true;
-  });
-}
-
-/* 다짐 문서 채우기: 증거로 한 줄씩 입증 */
-function dajimGame(){
-  return new Promise(res=>{
-    const L=[
-      {pre:"하나. 서울 이춘풍이 평양에 가져온 돈은",blank:"호조에서 빌린 나랏돈",post:"이옵니다.",ok:["e1"],hint:"그 돈이 원래 어디에서 나온 돈인지 알려 주는 증거예요."},
-      {pre:"둘. 그 돈은 소녀가 조른",blank:"비단·노리개·놋그릇 값",post:"으로 다 쓰였사옵니다.",ok:["e2"],hint:"춘풍의 돈이 무엇을 사는 데 쓰였는지 적힌 기록이에요."},
-      {pre:"셋. 돈이 떨어지자 소녀는",blank:"‘노류장화’라 하며 춘풍을 내쫓았사옵니다",post:".",ok:["e7"],hint:"춘풍이 쫓겨나던 날 추월이 한 말을 들은 사람이 있어요."},
-      {pre:"넷. 그 뒤 소녀는 춘풍을",blank:"사환으로 부리며 구박하였사옵니다",post:".",ok:["e4","e5"],hint:"춘풍이 추월의 집에서 어떤 대접을 받는지 본 사람들이 있어요."}
-    ];
-    let i=0,hearts=3,msg="";const done=[];
-    const v=mgOpen("");const box=v.querySelector(".sheet");
-    const paint=()=>{
-      box.innerHTML=`<span class="eb">다짐 받기 · 증거로 한 줄씩 입증하기</span><h2>추월의 다짐</h2>
-      <p class="note">‘다짐’은 지은 죄를 인정하는 글이에요. 비장이 추월의 다짐을 적어 내려가요. 비어 있는 곳을 입증할 증거를 골라 한 줄씩 채우세요. <span class="heart" style="color:var(--seal)">위엄 ${"◆".repeat(hearts)}${"◇".repeat(3-hearts)}</span></p>
-      <div class="dajim">${L.map((l,k)=>`<p class="${k===i?"cur":""}">${esc(l.pre)} <b class="${done[k]?"ok":""}">${done[k]?esc(l.blank):"＿＿＿＿＿＿"}</b>${esc(l.post)}${done[k]?' <span class="seal-s">證</span>':""}</p>`).join("")}
-      ${i>=L.length?`<p class="sign">위 사실이 틀림없으므로 호조 돈과 이자를 합한 오천 냥을 영문 분부대로 바치겠사옵니다.<br><span>평양 기생 추월</span> <button class="btn pri" data-sign>수결 받기</button></p>`:""}</div>
-      ${i<L.length?`<div class="ev">${G.evid.map(id=>`<button data-ev="${id}"><b>${esc(EVID[id].t)}</b><span>${esc(EVID[id].d)}</span></button>`).join("")}</div>`:""}
-      ${msg?`<div class="resp">${msg}</div>`:""}`;
-    };
-    paint();
-    box.addEventListener("click",e=>{
-      const b=e.target.closest("[data-ev]");
-      if(b&&i<L.length){const id=b.dataset.ev,l=L[i];
-        if(l.ok.includes(id)){sfx("stamp");done[i]=true;i++;msg="";if(i>=L.length)sfx("correct")}
-        else{sfx("wrong");hearts--;msg=`그 증거로는 이 줄을 입증하기 어려워요. <b>실마리</b>: ${esc(l.hint)}`;if(hearts<=0){hearts=3;msg="사또가 헛기침을 한다. 비장은 정신을 가다듬었다. <b>실마리</b>: "+esc(l.hint)}shk(box)}
-        paint();return}
-      if(e.target.closest("[data-sign]")){sfx("stamp");const s=box.querySelector(".sign span");if(s)s.innerHTML="평양 기생 추월 <i class='sgn'>秋月</i>";setTimeout(()=>{mgClose(v);res()},700)}
-    });
-    UI.onKey=()=>true;
-  });
-}
 
 /* ═════════ 공덕(경험치)과 작은 도우미 ═════════ */
 function addXp(n){G.xp=(G.xp||0)+n;writeSave();updateHUD();const c=$("#money");if(!c)return;const f=document.createElement("span");f.className="xpfly";f.textContent="+"+n+" 슬기";
@@ -1771,44 +1634,7 @@ function showTitle(){
 let HC=null;
 function Px(x,y,w,h,c){const g=HC||ctx;g.fillStyle=c;g.fillRect(Math.round(x),Math.round(y),w,h)}
 const KO="#1d1813";
-const HELD={
-  knife:{n:"작은 칼",d(x,y){Px(x-1,y-10,3,11,KO);Px(x,y-9,1,7,"#dfe6ef");Px(x-2,y-2,5,1,"#d4b04a");Px(x,y-1,1,3,"#8c3b2a");Px(x+1,y+1,1,3,"#d9432f")}},
-  bamboo:{n:"죽절 반쪽",d(x,y){Px(x-2,y-9,4,10,KO);Px(x-1,y-8,2,8,"#f2c94c");Px(x-1,y-5,2,1,"#b8902a");Px(x-1,y-8,2,1,"#fff3a0")}},
-  tusim:{n:"투심 반쪽",d(x,y){Px(x-4,y-7,7,7,KO);Px(x-3,y-6,5,5,"#f4f1ea");Px(x-2,y-5,2,2,"#ffffff");Px(x+1,y-3,1,2,"#cfd6de");Px(x+3,y-7,1,7,"#d4b04a")}},
-  jacket:{n:"낡은 옷",d(x,y){Px(x-6,y-8,12,9,KO);Px(x-5,y-7,10,7,"#a9bccb");Px(x-1,y-7,2,4,"#f4f1ea");Px(x-5,y-7,2,3,"#8fa3b3");Px(x+3,y-7,2,3,"#8fa3b3");Px(x-3,y-2,2,2,"#7d8f9d")}},
-  brocade:{n:"송금단 저고리",d(x,y){Px(x-6,y-8,12,9,KO);Px(x-5,y-7,10,7,"#2f6b4f");Px(x-1,y-7,2,4,"#f4f1ea");Px(x-4,y-5,1,1,"#f2c94c");Px(x+3,y-4,1,1,"#f2c94c");Px(x+1,y-2,1,1,"#f2c94c");Px(x-2,y-3,1,1,"#f2c94c")}},
-  letter:{n:"봉한 글",d(x,y){Px(x-4,y-9,8,10,KO);Px(x-3,y-8,6,8,"#f4eedc");Px(x-3,y-8,6,1,"#cbb178");Px(x-1,y-5,2,2,"#b53a2c")}},
-  silver:{n:"은 보따리",d(x,y){Px(x-5,y-7,10,8,KO);Px(x-4,y-6,8,6,"#3f5f8a");Px(x-1,y-8,2,2,"#3f5f8a");Px(x-3,y-4,2,1,"#dfe6ef");Px(x+1,y-3,2,1,"#dfe6ef")}},
-  coin:{n:"모은 돈",d(x,y){Px(x-3,y-6,6,6,KO);Px(x-2,y-5,4,4,"#d4b04a");Px(x-1,y-4,2,2,"#8a6a1f")}},
-  ring:{n:"반지와 금비녀",d(x,y){Px(x-5,y-4,10,2,KO);Px(x-4,y-4,8,1,"#f2c94c");Px(x+2,y-8,4,4,KO);Px(x+3,y-7,2,2,"#f2c94c")}},
-  seal:{n:"대원수의 인수",d(x,y){Px(x-3,y-8,7,8,KO);Px(x-2,y-7,5,3,"#f2c94c");Px(x-2,y-4,5,3,"#d4b04a");Px(x-1,y-1,3,4,"#6a3f8a")}},
-  porridge:{n:"죽 그릇",d(x,y){Px(x-4,y-5,8,5,KO);Px(x-3,y-4,6,3,"#f4f1ea");Px(x-3,y-5,6,1,"#e8dcb8")}},
-  babyclothes:{n:"아이 옷",d(x,y){Px(x-4,y-6,8,7,KO);Px(x-3,y-5,6,5,"#f4c6d2");Px(x-1,y-5,2,2,"#ffffff")}},
-  petition:{n:"탄원서",d(x,y){Px(x-4,y-11,8,11,KO);Px(x-3,y-10,6,9,"#f4eedc");Px(x-2,y-9,1,6,"#5a4a3a");Px(x,y-9,1,7,"#5a4a3a");Px(x+2,y-9,1,4,"#5a4a3a")}},
-  bundle:{n:"봇짐",d(x,y){Px(x-5,y-7,10,8,KO);Px(x-4,y-6,8,6,"#8a6a44");Px(x-1,y-8,2,2,"#8a6a44");Px(x-4,y-4,8,1,"#6d4b2c")}},
-  sword:{n:"칼",d(x,y){Px(x-1,y-14,3,14,KO);Px(x,y-13,1,12,"#eef3f8");Px(x-3,y-1,7,2,KO);Px(x-2,y-1,5,1,"#d4b04a");Px(x-1,y+1,3,4,KO);Px(x,y+1,1,3,"#8c3b2a");Px(x,y-14,1,1,"#ffffff")}},
-  spear:{n:"창",d(x,y){Px(x-1,y-21,3,29,KO);Px(x,y-14,1,21,"#8e6a44");Px(x,y-21,1,7,"#dfe6ef");Px(x-2,y-15,5,2,"#b53a2c");Px(x-2,y-13,1,3,"#b53a2c")}},
-  scroll:{n:"글",d(x,y){Px(x-3,y-10,6,12,KO);Px(x-2,y-9,4,10,"#f1e6c8");Px(x-3,y-10,6,2,"#6d4b2c");Px(x-3,y,6,2,"#6d4b2c");Px(x-2,y-5,4,1,"#b53a2c")}},
-  herb:{n:"보은초",d(x,y,t){Px(x,y-7,1,9,"#3f6b2c");Px(x-4,y-9,4,3,KO);Px(x-3,y-8,3,2,"#6fae4a");Px(x+1,y-12,4,4,KO);Px(x+1,y-11,3,3,"#8fd05e");Px(x+1,y-5,3,2,"#6fae4a");if(Math.sin(t*6)>0.3)Px(x+3,y-13,1,1,"#ffffff")}},
-  fruit:{n:"과일",d(x,y){Px(x-3,y-7,7,7,KO);Px(x-2,y-6,5,5,"#d9432f");Px(x-2,y-6,2,2,"#ff9a7a");Px(x,y-9,1,3,"#3f6b2c");Px(x+1,y-9,2,1,"#6fae4a")}},
-  silk:{n:"오색 명주",d(x,y){Px(x-5,y-8,10,9,KO);["#d9432f","#f2c94c","#3f8f5a","#2f6fb5","#f4f1ea"].forEach((c,i)=>Px(x-4,y-7+i,8,1,c));Px(x-4,y-2,8,2,"#f4f1ea");Px(x-4,y-1,3,1,"#e9a4b8")}},
-  fan:{n:"부채",d(x,y){Px(x,y-3,1,6,"#6d4b2c");Px(x-5,y-10,11,7,KO);Px(x-4,y-9,9,5,"#f4f6fa");Px(x-2,y-9,1,5,"#b9c2cc");Px(x+2,y-9,1,5,"#b9c2cc");Px(x,y-9,1,5,"#b9c2cc")}},
-  redfan:{n:"홍선",d(x,y){Px(x,y-3,1,6,"#6d4b2c");Px(x-5,y-10,11,7,KO);Px(x-4,y-9,9,5,"#d9432f");Px(x-2,y-9,1,5,"#8c2a1c");Px(x+2,y-9,1,5,"#8c2a1c");Px(x,y-9,1,5,"#8c2a1c");Px(x-4,y-9,9,1,"#f2c94c")}},
-  flag:{n:"검은 기",d(x,y,t){const w=Math.sin(t*5)>0?1:0;Px(x,y-15,1,18,"#8e6a44");Px(x+1,y-15,9,7,KO);Px(x+2,y-14+w,7,5,"#2b2b33");Px(x+1,y-15,9,1,"#d4b04a");Px(x+4,y-12+w,2,2,"#d4b04a")}},
-  hoe:{n:"괭이",d(x,y){Px(x-1,y-11,3,16,KO);Px(x,y-10,1,14,"#8e6a44");Px(x-5,y-12,6,4,KO);Px(x-4,y-11,4,2,"#9aa3ad");Px(x-4,y-9,1,2,"#9aa3ad")}},
-  broom:{n:"비",d(x,y){Px(x-1,y-11,3,12,KO);Px(x,y-10,1,11,"#8e6a44");Px(x-3,y,7,7,KO);Px(x-2,y+1,5,5,"#c9a36a");Px(x-1,y+1,1,5,"#8e6a44");Px(x+1,y+1,1,5,"#8e6a44")}},
-  wood:{n:"나뭇단",pos:"back",d(x,y){Px(x-6,y-4,12,8,KO);Px(x-5,y-3,10,2,"#8e6a44");Px(x-5,y-1,10,2,"#7a5634");Px(x-5,y+1,10,2,"#8e6a44");Px(x-1,y-3,1,6,"#cbb178");Px(x-5,y-3,1,2,"#c9a36a");Px(x+4,y-1,1,2,"#c9a36a")}},
-  cangue:{n:"큰칼",pos:"neck",d(x,y){Px(x-11,y-2,22,6,KO);Px(x-10,y-1,20,4,"#9a7446");Px(x-10,y-1,20,1,"#b8905c");Px(x-3,y-1,6,4,"#5a3b22");Px(x-8,y,1,2,"#3a2a18");Px(x+7,y,1,2,"#3a2a18")}},
-  bowl:{n:"약사발",d(x,y,t){Px(x-4,y-5,8,5,KO);Px(x-3,y-4,6,3,"#f4f1ea");Px(x-3,y-5,6,1,"#5a3b22");const s=Math.floor(t*3)%3;Px(x-1+s,y-8-s,1,2,"rgba(255,255,255,.7)")}},
-  pouch:{n:"금낭",d(x,y){Px(x-4,y-7,8,8,KO);Px(x-3,y-6,6,6,"#b53a2c");Px(x-2,y-7,4,1,"#f2c94c");Px(x-1,y-4,2,2,"#f2c94c")}},
-  paper:{n:"떼어 낸 방",d(x,y){Px(x-4,y-11,8,11,KO);Px(x-3,y-10,6,9,"#f4eedc");Px(x-2,y-9,1,6,"#5a4a3a");Px(x,y-9,1,7,"#5a4a3a");Px(x+2,y-9,1,4,"#5a4a3a");Px(x+1,y-3,2,2,"#b53a2c")}},
-  book:{n:"책",d(x,y){Px(x-4,y-7,8,7,KO);Px(x-3,y-6,6,5,"#2f4a6d");Px(x-3,y-6,1,5,"#f4eedc");Px(x-1,y-5,3,1,"#f4eedc")}},
-  bow:{n:"활",d(x,y){Px(x-1,y-10,2,3,"#8e6a44");Px(x-3,y-7,2,9,"#8e6a44");Px(x-1,y+2,2,3,"#8e6a44");Px(x+1,y-9,1,13,"#eeeeee")}},
-  brush:{n:"붓",d(x,y){Px(x-1,y-10,3,10,KO);Px(x,y-9,1,8,"#8e6a44");Px(x,y-1,1,4,KO)}},
-  hammer:{n:"철퇴",d(x,y){Px(x-1,y-9,3,13,KO);Px(x,y-8,1,11,"#6d4b2c");Px(x-4,y-15,9,7,KO);Px(x-3,y-14,7,5,"#6b7480");Px(x-3,y-14,3,1,"#aab3bd")}},
-  axe:{n:"도끼",d(x,y){Px(x-1,y-9,3,13,KO);Px(x,y-8,1,11,"#6d4b2c");Px(x,y-14,7,7,KO);Px(x+1,y-13,5,5,"#9aa3ad");Px(x+5,y-13,1,5,"#eef3f8")}},
-  arrow:{n:"화살",d(x,y){Px(x-6,y,12,1,"#8e6a44");Px(x+5,y-1,2,3,"#dfe6ef");Px(x-7,y-1,2,3,"#f4f1ea")}}
-};
+const HELD={};
 function holdList(e){return !e||!e.hold?[]:Array.isArray(e.hold)?e.hold:[e.hold]}
 function holdAdd(e,id){const a=holdList(e).filter(x=>x!==id);a.push(id);e.hold=a;if(e===G.player)paintBag()}
 function holdDel(e,id){const a=holdList(e).filter(x=>x!==id);e.hold=a.length?a:null;if(e===G.player)paintBag()}
