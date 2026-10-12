@@ -1616,7 +1616,7 @@ function showTitle(){
   const el=document.createElement("div");el.className="title";el.id="title";
   el.innerHTML=`<div class="tcard"><div class="eb">한글날 기념 서사 RPG</div><h1>스물여덟 자의 비밀</h1><p class="sub">집현전 막내 학사가 되어, 훈민정음이 태어나는 순간을 지켜보세요</p>
     <div class="acts">${fin?`<button class="btn pri" data-t="cert">수료증 · 제출하기</button>`:""}${sv&&sv.ch&&ROUTES[sv.route]&&!fin?`<button class="btn pri" data-t="resume">이어 하기 · 제${sv.ch}장</button><button class="btn" data-t="new">새로 시작</button>`:`<button class="btn${fin?"":" pri"}" data-t="new">${fin?"처음부터 다시 하기":"이야기 시작"}</button>`}<button class="btn" data-t="menu">장 고르기 · 조작법</button></div>
-    <div class="credit">네 장을 모두 마치면 학번과 이름을 적어 <b>수료증을 제출</b>할 수 있어요 · 20분쯤 걸려요<br>훈민정음의 원문은 붉은 낙관 <i>原</i>으로 표시하고 풀이를 함께 보여 줘요 · 그림은 AI로 생성했어요<br><button class="lnk" data-t="credits">만든 곳·출처 보기</button></div></div>`;
+    <div class="credit">네 장을 모두 마치면 학번과 이름을 적어 <b>수료증을 제출</b>할 수 있어요<br>훈민정음의 원문은 붉은 낙관 <i>原</i>으로 표시하고 풀이를 함께 보여 줘요 · 그림은 AI로 생성했어요<br><button class="lnk" data-t="credits">만든 곳·출처 보기</button></div></div>`;
   document.body.appendChild(el);const f=el.querySelector(".btn.pri");f&&f.focus();
   UI.modal=true;UI.onKey=null;
   el.addEventListener("click",e=>{
