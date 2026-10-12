@@ -1614,7 +1614,7 @@ function showTitle(){
   const sv=loadSave();const fin=G.ex.done.hg>=4&&G.ex.quiz;
   document.querySelectorAll("#title").forEach(x=>x.remove());
   const el=document.createElement("div");el.className="title";el.id="title";
-  el.innerHTML=`<div class="tcard"><div class="eb">한글날 기념 서사 RPG</div><h1>스물여덟 자의 비밀</h1><p class="sub">집현전 막내 학사가 되어, 훈민정음이 태어나는 순간을 지켜보세요</p>
+  el.innerHTML=`<div class="tcard"><div class="eb">한글날 ${new Date().getFullYear()-1926}돌 기념 서사 RPG</div><h1>스물여덟 자의 비밀</h1><p class="sub">집현전 막내 학사가 되어, 훈민정음이 태어나는 순간을 지켜보세요</p>
     <div class="acts">${fin?`<button class="btn pri" data-t="cert">수료증 · 제출하기</button>`:""}${sv&&sv.ch&&ROUTES[sv.route]&&!fin?`<button class="btn pri" data-t="resume">이어 하기 · 제${sv.ch}장</button><button class="btn" data-t="new">새로 시작</button>`:`<button class="btn${fin?"":" pri"}" data-t="new">${fin?"처음부터 다시 하기":"이야기 시작"}</button>`}<button class="btn" data-t="menu">장 고르기 · 조작법</button></div>
     <div class="credit">네 장을 모두 마치면 학번과 이름을 적어 <b>수료증을 제출</b>할 수 있어요<br>훈민정음의 원문은 붉은 낙관 <i>原</i>으로 표시하고 풀이를 함께 보여 줘요 · 그림은 AI로 생성했어요<br><button class="lnk" data-t="credits">만든 곳·출처 보기</button></div></div>`;
   document.body.appendChild(el);const f=el.querySelector(".btn.pri");f&&f.focus();
@@ -1932,7 +1932,7 @@ function certSheet(){return new Promise(res=>{const E=G.ex;UI.modal=true;setBody
   const nameBox=()=>{const n=hangulOf(E.name).length;if(!n)return "";
     return solved()?nameHTML(E.name)+`<p class="note" style="margin:2px 0">내 이름 풀이: 첫 번에 맞힌 낱자 ${E.nameOk.ok} / ${E.nameOk.n}</p>`:`<button class="btn" data-name style="width:100%;margin:4px 0">내 이름 ‘${esc(hangulOf(E.name).join(""))}’을 낱자로 풀어 보기 ▶</button><p class="note" style="margin:2px 0">이름 속 글자가 어떤 원리로 만들어졌는지 직접 풀어야 제출할 수 있어요.</p>`};
   const paint=()=>{const code=E.sid&&E.name?certCode(E.sid,E.name,score()):"";
-    v.innerHTML=`<div class="sheet cert"><span class="eb">${d.getFullYear()}년 한글날 · 훈민정음 반포 ${d.getFullYear()-1446}돌</span><h2>수료증</h2>
+    v.innerHTML=`<div class="sheet cert"><span class="eb">${d.getFullYear()}년 · 한글날 ${d.getFullYear()-1926}돌 · 훈민정음 반포 ${d.getFullYear()-1446}돌</span><h2>수료증</h2>
   <p style="margin:6px 0">「스물여덟 자의 비밀」을 <b>${fin?"끝까지 마쳤습니다.":"아직 따라가는 중입니다."}</b></p>
   <table><tr><td>마친 장</td><td>${E.done.hg||0} / 4장</td></tr>
   <tr><td>마지막 물음</td><td>${E.quiz?E.quiz.ok+" / "+E.quiz.n:"-"}</td></tr><tr><td>배움 도장</td><td>${Object.keys(E.traits).length} / ${Object.keys(TRAITS).length}</td></tr>
@@ -1945,7 +1945,7 @@ function certSheet(){return new Promise(res=>{const E=G.ex;UI.modal=true;setBody
   <div class="codebox">${code?`<p class="note" style="margin:2px 0">확인 번호</p><div class="code">${code}</div>`:""}</div>
   ${msg}
   ${E.sent?`<div class="okmsg"><b>제출했어요.</b> ${esc(E.sent.sid)} ${esc(E.sent.name)} · 확인 번호 ${esc(E.sent.code)}<br>혹시 모르니 이 화면을 찍어 두세요.</div>`:""}
-  <div><span class="seal">한글날<br>${d.getFullYear()-1446}돌</span></div>
+  <div><span class="seal">한글날<br>${d.getFullYear()-1926}돌</span></div>
   <p class="note">${SUBMIT.url?(E.sent?"한마디만 고쳐서 다시 제출할 수 있어요.":"학번과 이름을 정확히 적고 [제출하기]를 누르세요. <b>제출은 본인 것 한 번뿐이에요. 이름만 바꿔서 다시 제출할 수 없어요.</b>"):"학번과 이름을 적은 뒤, 확인 번호가 보이게 이 화면을 찍어 선생님께 내세요."}</p>`
   :`<p class="note">네 장을 모두 마치고 마지막 물음까지 풀면 여기서 학번과 이름을 적어 제출할 수 있어요.</p>`}
   <div class="row" style="justify-content:center">${fin&&SUBMIT.url?`<button class="btn pri" data-send>${E.sent?"다시 제출하기":"제출하기"}</button>`:""}<button class="btn${fin&&SUBMIT.url?"":" pri"}" data-done>닫기</button></div></div>`;
@@ -2528,12 +2528,12 @@ async function epilogue(){
   <li><b>조선 시대</b>‘언문’이라 불리며 한문보다 낮게 여겨지기도 했지만, 편지와 소설과 노래로 백성과 여성들 사이에 널리 퍼지다.</li>
   <li><b>1894</b>갑오개혁. 나라의 공식 문서를 국문(한글)으로 쓰기로 하다.</li>
   <li><b>1910년대</b>주시경과 제자들이 ‘한글’이라는 이름을 쓰기 시작하다.</li>
-  <li><b>1926</b>일제 강점기, 조선어연구회가 훈민정음 반포 480돌을 기려 ‘가갸날’을 만들다. 1928년부터 ‘한글날’.</li>
+  <li><b>1926</b>일제 강점기, 조선어연구회가 훈민정음 반포 480돌을 기려 ‘가갸날’을 만들다. 지금으로부터 ${Y-1926}년 전의 일이다. 1928년부터 ‘한글날’.</li>
   <li><b>1940</b>경북 안동에서 『훈민정음』 해례본이 발견되다. 간송 전형필이 사들여 지켜 내다.</li>
   <li><b>1942</b>조선어학회 사건. 우리말 사전을 만들던 학자들이 일제에 붙잡혀 옥고를 치르다.</li>
   <li><b>1945</b>광복. 해례본의 기록에 따라 한글날을 10월 9일로 정하다.</li>
   <li><b>1997</b>해례본이 유네스코 세계기록유산이 되다.</li>
-  <li><b>${Y}</b>훈민정음 반포 ${Y-1446}돌, 첫 가갸날로부터 ${Y-1926}돌. 그리고 오늘, 여러분이 그 글자를 쓰고 있다.</li></ul>
+  <li><b>${Y}</b>훈민정음 반포 ${Y-1446}돌, 한글날 ${Y-1926}돌. 그리고 오늘, 여러분이 그 글자를 쓰고 있다.</li></ul>
   <div class="row"><button class="btn pri" data-go="1">계속 ▶</button></div></div>`);
   meet("w_gagya");meet("w_hangul");trait("day");
   await say("narr","580년이 지난 오늘, 어느 학교 급식실 앞에 이런 알림이 붙었어요.");
